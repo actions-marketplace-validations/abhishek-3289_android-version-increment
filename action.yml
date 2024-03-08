@@ -1,0 +1,44 @@
+name: Android App Version Increment
+description: Increment android application version
+author: Abhishek Bansal
+
+branding:
+  icon: arrow-up-right
+  color: green
+
+inputs:
+  increment-type:
+    description: Provide increment type [patch, minor, major]
+    required: false
+    default: patch
+  update-release-notes:
+    description: Provide true if release notes need to be updated; Please create gradle task updateReleaseNotesVersion
+    required: false
+    default: 'false'
+  github-token:
+    description: The GitHub token used to authenticate when submitting via the Dependency Submission API.
+    default: ${{ github.token }}
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Fetch tag and increment version
+      id: version
+      run: ${{ github.action_path }}/version_script.sh ${{ inputs.increment-type }}
+      shell: bash
+
+    - name: Setup Gradle and increment app version
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        github-token: ${{ inputs.github-token }}
+        arguments: |
+          -Dversion.major=${{ steps.version.outputs.major_version }}
+          -Dversion.minor=${{ steps.version.outputs.minor_version }} 
+          -Dversion.patch=${{ steps.version.outputs.patch_version }}
+          incrementBuildMeta
+
+    - name: Update release notes
+      if: ${{ inputs.update-release-notes == "true" }}
+      run: ./gradlew updateReleaseNotesVersion
+      shell: bash
