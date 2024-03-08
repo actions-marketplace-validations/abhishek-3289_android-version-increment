@@ -39,6 +39,7 @@ fi
 
 NEW_VERSION="$MAJOR.$MINOR.$PATCH"
 {
+  echo latest_tag=$CURRENT_VERSION
   echo old_version=$VERSION_WITHOUT_V
   echo new_version=$NEW_VERSION
   echo major_version=$MAJOR

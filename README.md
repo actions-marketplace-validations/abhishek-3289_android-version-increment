@@ -1,5 +1,7 @@
 # Android App Version Increment ➕
 
+[![My Skills](https://skillicons.dev/icons?i=githubactions,gradle,androidstudio&perline=3)](https://skillicons.dev)
+
 ## Use 📄
 
 ### Example ⌨️
@@ -46,3 +48,12 @@ tasks.register('updateReleaseNotesVersion') {
 | increment-type          | The digit to increment, either `major`, `minor` or `patch`.                                                                                       | No       | `patch` |
 | update-release-notes    | Set to `true` for updating release notes; This will execute gradle task `updateReleaseNotesVersion` which can be added into your android project. | No       | `false`  |
 | github-token            | The GitHub token used to authenticate when submitting via the Dependency Submission API.                                                          | No       | `github.token`  |
+
+### Outputs
+
+1. **latest-tag** :- Latest tag or default `v0.0.0` if tag does not exist.
+2. **tag-version** :- Tag version without `v` eg: `1.0.0`.
+3. **new-version** :- Incremented version.
+4. **new-version-major** :- Incremented major version.
+5. **new-version-minor** :- Incremented minor version.
+6. **new-version-patch** :- Incremented patch version.
