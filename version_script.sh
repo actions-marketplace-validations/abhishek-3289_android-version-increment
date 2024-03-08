@@ -45,5 +45,3 @@ NEW_VERSION="$MAJOR.$MINOR.$PATCH"
   echo minor_version=$MINOR
   echo patch_version=$PATCH
 } >> "$GITHUB_OUTPUT"
-
-exist 0
