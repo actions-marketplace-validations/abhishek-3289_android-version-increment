@@ -39,6 +39,6 @@ runs:
           incrementBuildMeta
 
     - name: Update release notes
-      if: ${{ inputs.update-release-notes == "true" }}
+      if:  inputs.update-release-notes == 'true'
       run: ./gradlew updateReleaseNotesVersion
       shell: bash
