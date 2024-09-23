@@ -47,9 +47,15 @@ runs:
       id: version
       run: ${{ github.action_path }}/version_script.sh ${{ inputs.increment-type }}
       shell: bash
-
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: zulu
+        java-version: 17
+          
     - name: Setup Gradle and increment app version
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         github-token: ${{ inputs.github-token }}
         arguments: |
