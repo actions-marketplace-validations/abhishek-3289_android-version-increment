@@ -54,16 +54,16 @@ runs:
         distribution: zulu
         java-version: 17
           
-    - name: Setup Gradle and increment app version
+    - name: Setup Gradle 
       uses: gradle/actions/setup-gradle@v4
       with:
         github-token: ${{ inputs.github-token }}
-        arguments: |
-          -Dversion.major=${{ steps.version.outputs.major_version }}
-          -Dversion.minor=${{ steps.version.outputs.minor_version }} 
-          -Dversion.patch=${{ steps.version.outputs.patch_version }}
-          incrementBuildMeta
-
+          
+    - name: increment app version
+      run: ./gradlew incrementBuildMeta -Dversion.major=${{ steps.version.outputs.major_version }} -Dversion.minor=${{ steps.version.outputs.minor_version }} -Dversion.patch=${{ steps.version.outputs.patch_version }}
+      with:
+        github-token: ${{ inputs.github-token }}
+          
     - name: Update release notes
       if:  inputs.update-release-notes == 'true'
       run: ./gradlew updateReleaseNotesVersion
