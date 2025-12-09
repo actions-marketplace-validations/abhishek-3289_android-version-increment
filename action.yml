@@ -20,6 +20,26 @@ inputs:
     default: ${{ github.token }}
     required: false
 
+outputs:
+  latest-tag:
+    description: Latest tag or default v0.0.0 if tag does not exist
+    value: ${{ steps.version.outputs.latest_tag }}
+  tag-version:
+    description: Tag version without v.
+    value: ${{ steps.version.outputs.old_version }}
+  new-version:
+    description: Incremented version
+    value: ${{ steps.version.outputs.new_version }}
+  new-version-major:
+    description: Incremented version major
+    value: ${{ steps.version.outputs.major_version }}
+  new-version-minor:
+    description: Incremented version minor
+    value: ${{ steps.version.outputs.minor_version }}
+  new-version-patch:
+    description: Incremented version patch
+    value: ${{ steps.version.outputs.patch_version }}
+
 runs:
   using: composite
   steps:
@@ -27,17 +47,22 @@ runs:
       id: version
       run: ${{ github.action_path }}/version_script.sh ${{ inputs.increment-type }}
       shell: bash
-
-    - name: Setup Gradle and increment app version
-      uses: gradle/actions/setup-gradle@v3
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: zulu
+        java-version: 17
+          
+    - name: Setup Gradle 
+      uses: gradle/actions/setup-gradle@v4
       with:
         github-token: ${{ inputs.github-token }}
-        arguments: |
-          -Dversion.major=${{ steps.version.outputs.major_version }}
-          -Dversion.minor=${{ steps.version.outputs.minor_version }} 
-          -Dversion.patch=${{ steps.version.outputs.patch_version }}
-          incrementBuildMeta
-
+          
+    - name: increment app version
+      shell: bash
+      run: ./gradlew incrementBuildMeta -Dversion.major=${{ steps.version.outputs.major_version }} -Dversion.minor=${{ steps.version.outputs.minor_version }} -Dversion.patch=${{ steps.version.outputs.patch_version }}
+          
     - name: Update release notes
       if:  inputs.update-release-notes == 'true'
       run: ./gradlew updateReleaseNotesVersion
